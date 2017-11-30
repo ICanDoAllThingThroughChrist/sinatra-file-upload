@@ -1,0 +1,21 @@
+<h4>Upload Image</h4>
+<form action="/uploads" method="POST" enctype="multipart/form-data">
+	<input type="hidden" name="order_id" value="<%=@order.id%>" />
+	Title: <input type="text" name="title"></br>
+	<input type="file" name="file">
+	<input type="submit" value="Upload">
+</form>
+<% @order.uploads.each do |order_upload| %>
+	<ul>
+		<li>
+			<%= order_upload.title %></br>
+			<img src="/uploads/<%=order_upload.image_url %>" />
+
+			<form action="/uploads/<%=order_upload.id%>/delete" method="POST">
+				<input id="hidden" type="hidden" name="_method" value="delete">
+				<button type="submit"> Delete </button>
+			</form>
+		</li>
+	</ul>
+<% end %>
+
