@@ -13,12 +13,14 @@ class ApplicationController < Sinatra::Base
   end
 
   get "/" do
+  	@order = Order.find_or_create_by(params[:order_id])
+  	binding.pry
     erb :create_order
   end
 
   post "/uploads" do 
-  		raise params.inspect
-  		@order = Order.find_by_id(params[:order_id])
+  		#raise params.inspect
+  		@order = Order.find_or_create_by(params[:order_id])
 		@filename = params[:file][:filename]
   		file = params[:file][:tempfile]
   		@upload = Upload.new
@@ -30,10 +32,38 @@ class ApplicationController < Sinatra::Base
   		File.open("./public/uploads/#{@filename}", 'wb') do |f|
     		f.write(file.read)
   		end
-
-		redirect "/categories/#{@order.id}"
-
+  		binding.pry
+	  redirect "/orders/#{@order.id}"
+      flash[:message] = "Successfully created order."
   end
 
+  get '/orders/:id'do
+    # if logged_in?
+      #@user = User.find(session[:user_id])
+      @order =Order.find_by_id(params[:id])
+        # if @order.user.id == current_user.id
+        #   @orders = current_user.orders
+        #   flash[:message] = "You are logged in to view an order."
+          erb :'/show_order'
+        # else
+        #   redirect to '/orders'
+        # end
+    # else 
+    #   flash[:message] = "You must be logged in to view a order."
+    #   redirect to '/login'
+    # end
+  end
+
+  helpers do
+    def logged_in?
+      !!current_user
+    end
+
+    def current_user
+      if session[:user_id]
+        @current_user ||= User.find_by(id: session[:user_id]) 
+      end
+    end
+  end
 
 end

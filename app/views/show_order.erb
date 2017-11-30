@@ -1,0 +1,13 @@
+<% @order.uploads.each do |order_upload| %>
+	<ul>
+		<li>
+			<%= order_upload.title %></br>
+			<img src="/uploads/<%=order_upload.image_url %>" />
+			<a href="/uploads/<%=order_upload.image_url %>"/>link</a>
+			<form action="/uploads/<%=order_upload.id%>/delete" method="POST">
+				<input id="hidden" type="hidden" name="_method" value="delete">
+				<button type="submit"> Delete </button>
+			</form>
+		</li>
+	</ul>
+<% end %>
